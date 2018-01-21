@@ -149,11 +149,12 @@ function isMyComposition($ventiCinqueEstraz, $quad, $successive){
 $colpi = 0;
 
     for($i=0; $i<25; $i++){//NON FUNZIONA
-        addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$i],
-                                                        $ventiCinqueEstraz[$i],
-                                                        $ventiCinqueEstraz[$i],
-                                                        $ventiCinqueEstraz[$i],
-                                                        $ventiCinqueEstraz[$i]));
+       $ses = $ventiCinqueEstraz[0][$i]['data'];
+        addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[0][$i]['uno'],
+                                                        $ventiCinqueEstraz[0][$i]['due'],
+                                                        $ventiCinqueEstraz[0][$i]['tre'],
+                                                        $ventiCinqueEstraz[0][$i]['quattro'],
+                                                        $ventiCinqueEstraz[0][$i]['cinque']));
   
     
       if($sestinaObj->terni == 0)
