@@ -12,14 +12,7 @@
 	include '../../Classes/DBM.php';
 	include '../../Classes/Quadrature.php';
 $db = new DBM();
-        $sestinaObj= new stdClass;;
-    $sestinaObj->esiti =0;
-         $sestinaObj->esitiPositivi =0;
-         $sestinaObj->esitiNegativi =0;
-         $sestinaObj->terni =0;
-         $sestinaObj->ambi =0;
-         $sestinaObj->sestina = 0;
-         $sestina->posizione = 0 ;   
+    
 $tripla = isset($_POST['tripla']) ? $_POST['tripla']: '';
 $ambi = isset($_POST['ambi']) ? $_POST['ambi']: '';
 $myYear = isset($_POST['anno']) ? $_POST['anno']: '';
@@ -31,7 +24,8 @@ $successive = true;
 $model= new stdClass;
 $model->tripla = $tripla;
 $model->ambo = $ambi;
-$model->year = $myYear;
+//usare myyear
+$model->year = 2016;
 $model->ordine = 'destroso';
 	$queryQuad = new Quadrature($model->year, '*', $model->tripla);
 	$quadrature = $model->ordine == 'destroso' ? $queryQuad->getQuadratureDestroso() : $queryQuad->getQuadratureSinistroso();
@@ -87,12 +81,14 @@ function addOccurenceComp($quad, $sestina, $estraz)
                         //sestina viene formato confrontando la quadratura
                 }     
         }
+        
+        return $sestina;
 }
 
-function checkSestina($sestina, $quad, $posizione, $estraz)
+function checkSestina($sestinaObj, $sestina, $quad, $posizione, $estraz)
 { //DA METTERE DENTRO UN CICLO CHE SCORRA LA SESTINA e le estrazioni.
     $countVincita = 0; //AMBO TERNO ECC.
-  
+  //CERCARE NEL DB SE ESISTE LA SESTINA SE SI GLI AGGIORNO I VALORI
     for($i=0; $i<6; $i++)
     {
         foreach($estraz as $singola){
@@ -115,14 +111,15 @@ function checkSestina($sestina, $quad, $posizione, $estraz)
         $esitiPositivi++;
         $terni++;
     }
-         $sestinaObj->esiti = $esiti;
-         $sestinaObj->esitiPositivi = $esitiPositivi;
-         $sestinaObj->esitiNegativi = $esitiNegativi;
-         $sestinaObj->terni = $terni;
-         $sestinaObj->ambi = $ambi;
-         $sestinaObj->sestina = $sestina;
-         $sestina->posizione = $posizione ;   
-   return $sestinaObj;               
+         $sestinaObj[0][1] += $esiti;
+         $sestinaObj[1][1] += $esitiPositivi;
+         $sestinaObj[2][1] += $esitiNegativi;
+         $sestinaObj[3][1] += $terni;
+         $sestinaObj[4][1] += $ambi;
+         $sestinaObj[5][1] = $sestina;
+         $sestinaObj[6][1] += $posizione;
+//INSERIRE NEL DB 
+           return $sestinaObj; 
 }
 
 function contaColpa(){
@@ -140,29 +137,41 @@ function contaColpa(){
 }
 
 function isMyComposition($ventiCinqueEstraz, $quad, $successive){
-
+   
+   
 
 //    if(count($ventiCinqueEstraz) <= 25) return false;	
     $sestina = array(0,0,0,0,0,0);
 $colpi = 0;
-
+$count = 0;
+$posizione = 0;
+while($count < 2){
     for($i=0; $i<25; $i++){//NON FUNZIONA
-       $ses = $ventiCinqueEstraz[0][$i]['data'];
-        addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[0][$i]['uno'],
-                                                        $ventiCinqueEstraz[0][$i]['due'],
-                                                        $ventiCinqueEstraz[0][$i]['tre'],
-                                                        $ventiCinqueEstraz[0][$i]['quattro'],
-                                                        $ventiCinqueEstraz[0][$i]['cinque']));
-  
-    //RINCONTROLLARE IL METODO SOTTOSTANTE
-//      if($sestinaObj->terni == 0)
-//      {
-//                $colpi++;
-//                $sestinaObj->colpi = $colpi;
-//      }
+        $sestinaObj= array(      
+        array("esiti",0),
+        array("esitiPositivi",0),
+        array("esitiNegativi",0),
+        array("terni",0),
+        array("ambi",0),
+        array("sestina",array(0,0,0,0,0,0)),
+        array("posizione",0),
+    );
+     $sestina =   addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$count][$i]['uno'],
+                                                               $ventiCinqueEstraz[$count][$i]['due'],
+                                                               $ventiCinqueEstraz[$count][$i]['tre'],
+                                                               $ventiCinqueEstraz[$count][$i]['quattro'],
+                                                               $ventiCinqueEstraz[$count][$i]['cinque']));
+    for($j=25; $j<50; $j++){
+  $sestinaObj = checkSestina($sestinaObj, $sestina, $quad, $posizione, array(     $ventiCinqueEstraz[$count][$j]['uno'],
+                                                               $ventiCinqueEstraz[$count][$j]['due'],
+                                                               $ventiCinqueEstraz[$count][$j]['tre'],
+                                                               $ventiCinqueEstraz[$count][$j]['quattro'],
+                                                               $ventiCinqueEstraz[$count][$j]['cinque']));
+    }
+                                         
       }
-    
-
+    $count++;
+}
 }
 /*
     foreach($sestina as $valore)
