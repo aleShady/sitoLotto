@@ -69,54 +69,52 @@ function getMaxEstrazioneYear($Vzkdzprmnhzz, $Vtppv1qqczva)
 
 
 function addOccurenceComp($quad, $sestina, $estraz)
-{
-    
-    
+{  /*estraz corrisponde all'estrazione presa durante il ciclo for delle 25 estraz
+ *  successive e precedenti. Questa viene confrontata con la quadratura
+ * (presa durante il confronte di due estrazioni).
+ * Il confronto viene eseguito prendendo singolarmente ogni numero di estraz
+ * e confrontandolo con quello di quad in posizione i. Se c'è una corrispondenza
+ * la sestina passa da 0 a 1 e così via
+ * 
+ * 
+ * N.B. DOVREBBE FUNZIONARE COME METODO MA E' DA VERIFICARE
+ * !!BISOGNA ANCHE CONTARE I COLPI!!
+ */
         for($i=0; $i<6; $i++){
                 foreach($estraz as $singola){
                         if($quad[$i] == $singola)
-                        {
-                            $sestina[$i]++;
-                                                       
-                        }    
+                            $sestina[$i]++;  
+                        //sestina viene formato confrontando la quadratura
                 }     
         }
-      
-                
-              
 }
 
 function checkSestina($sestina, $quad, $posizione, $estraz)
-{
-    $countAmbi = 0;
-     $countTerni = 0;
-      
-       
+{ //DA METTERE DENTRO UN CICLO CHE SCORRA LA SESTINA e le estrazioni.
+    $countVincita = 0; //AMBO TERNO ECC.
+  
     for($i=0; $i<6; $i++)
     {
         foreach($estraz as $singola){
             if($quad[i] == $singola)
             {
-                $countAmbi++;
-                $countTerni++;
-                
+                $countVincita++;
             }
         }
     }
      $esiti++;
-    if($countTerni == 3)
-    {
-        
-        $esitiPositivi++;
-        $terni++;
-    }
-    else if($countAmbi == 2)
+    if($countVincita < 2)
+        $esitiNegativi++;
+    else if($countVincita == 2)
     {
         $esitiPositivi++;
         $ambi++;
     }
-
-   
+    else if($countVincita == 3)
+    {
+        $esitiPositivi++;
+        $terni++;
+    }
          $sestinaObj->esiti = $esiti;
          $sestinaObj->esitiPositivi = $esitiPositivi;
          $sestinaObj->esitiNegativi = $esitiNegativi;
@@ -156,12 +154,12 @@ $colpi = 0;
                                                         $ventiCinqueEstraz[0][$i]['quattro'],
                                                         $ventiCinqueEstraz[0][$i]['cinque']));
   
-    
-      if($sestinaObj->terni == 0)
-      {
-                $colpi++;
-                $sestinaObj->colpi = $colpi;
-      }
+    //RINCONTROLLARE IL METODO SOTTOSTANTE
+//      if($sestinaObj->terni == 0)
+//      {
+//                $colpi++;
+//                $sestinaObj->colpi = $colpi;
+//      }
       }
     
 
