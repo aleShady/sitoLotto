@@ -25,8 +25,9 @@ $model= new stdClass;
 $model->tripla = $tripla;
 $model->ambo = $ambi;
 //usare myyear
-$model->year = 2016;
+$model->year = (int)$myYear;
 $model->ordine = 'destroso';
+
 	$queryQuad = new Quadrature($model->year, '*', $model->tripla);
 	$quadrature = $model->ordine == 'destroso' ? $queryQuad->getQuadratureDestroso() : $queryQuad->getQuadratureSinistroso();
         	
@@ -47,7 +48,7 @@ foreach($quadrature as $estraz){
 
     $ventiCinqueEstraz = getValoriEstratti($estraz['ruota_1'], $estraz['ruota_2'], $model->year, $nBigEstraz, $estrazioniAnno, $estrazioniAnnoPrec, $db);
     
-    $Vlbjre5r3aqo = isMyComposition($ventiCinqueEstraz, $quad, $successive=true);
+    $Vlbjre5r3aqo = isMyComposition($ventiCinqueEstraz, $quad, $successive=true, $db, $myYear);
     
 
                         
@@ -85,22 +86,29 @@ function addOccurenceComp($quad, $sestina, $estraz)
         return $sestina;
 }
 
-function checkSestina($sestinaObj, $sestina, $quad, $posizione, $estraz)
+function checkSestina($sestinaObj, $sestina, $quad,$colpi, $posizione, $estraz)
 { //DA METTERE DENTRO UN CICLO CHE SCORRA LA SESTINA e le estrazioni.
     $countVincita = 0; //AMBO TERNO ECC.
   //CERCARE NEL DB SE ESISTE LA SESTINA SE SI GLI AGGIORNO I VALORI
+   
     for($i=0; $i<6; $i++)
     {
         foreach($estraz as $singola){
             if($quad[i] == $singola)
             {
                 $countVincita++;
+                if(countVincita <= 3)
+                $terno +=  $singola . "-";
+                
             }
         }
     }
      $esiti++;
-    if($countVincita < 2)
-        $esitiNegativi++;
+//     $colpi++;
+    if($countVincita < 2){
+                $esitiNegativi++;
+                $colpi++;
+    }
     else if($countVincita == 2)
     {
         $esitiPositivi++;
@@ -109,16 +117,28 @@ function checkSestina($sestinaObj, $sestina, $quad, $posizione, $estraz)
     else if($countVincita == 3)
     {
         $esitiPositivi++;
-        $terni++;
+        $nterni++;
+        $terno += ";";
+        
+
     }
          $sestinaObj[0][1] += $esiti;
          $sestinaObj[1][1] += $esitiPositivi;
          $sestinaObj[2][1] += $esitiNegativi;
-         $sestinaObj[3][1] += $terni;
+         $sestinaObj[3][1] += $nterni;
          $sestinaObj[4][1] += $ambi;
          $sestinaObj[5][1] = $sestina;
-         $sestinaObj[6][1] += $posizione;
-//INSERIRE NEL DB 
+         
+         if($countVincita == 3){
+             $sestinaObj[7][1] = $terno;
+             $sestinaObj[6][1] += $colpi;   
+         }      
+         else{
+             $sestinaObj[6][1] = 0;
+             $sestinaObj[7][1] = "";
+
+         }
+         
            return $sestinaObj; 
 }
 
@@ -136,7 +156,7 @@ function contaColpa(){
                    
 }
 
-function isMyComposition($ventiCinqueEstraz, $quad, $successive){
+function isMyComposition($ventiCinqueEstraz, $quad, $successive, $db, $myYear){
    
    
 
@@ -151,28 +171,56 @@ while($count < 2){
         array("esiti",0),
         array("esitiPositivi",0),
         array("esitiNegativi",0),
-        array("terni",0),
+        array("nterni",0),
         array("ambi",0),
         array("sestina",array(0,0,0,0,0,0)),
-        array("posizione",0),
+        array("colpi",0),
+            array("terno",0)
     );
      $sestina =   addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$count][$i]['uno'],
                                                                $ventiCinqueEstraz[$count][$i]['due'],
                                                                $ventiCinqueEstraz[$count][$i]['tre'],
                                                                $ventiCinqueEstraz[$count][$i]['quattro'],
-                                                               $ventiCinqueEstraz[$count][$i]['cinque']));
-    for($j=25; $j<50; $j++){
-  $sestinaObj = checkSestina($sestinaObj, $sestina, $quad, $posizione, array(     $ventiCinqueEstraz[$count][$j]['uno'],
+                                                               $ventiCinqueEstraz[$count][$i]['cinque']),$db,$myYear);
+   $result =  $db->read("SELECT sestina FROM sest$myYear where sestina = $sestina ");
+     for($j=25; $j<50; $j++){
+          
+
+  $sestinaObj = checkSestina($sestinaObj, $sestina, $quad, $colpi, $posizione, array(     $ventiCinqueEstraz[$count][$j]['uno'],
                                                                $ventiCinqueEstraz[$count][$j]['due'],
                                                                $ventiCinqueEstraz[$count][$j]['tre'],
                                                                $ventiCinqueEstraz[$count][$j]['quattro'],
-                                                               $ventiCinqueEstraz[$count][$j]['cinque']));
+                                                               $ventiCinqueEstraz[$count][$j]['cinque']),$db,$myYear);
     }
-                                         
+      $esiti = $sestinaObj[0][1];
+            $esitiPositivi = $sestinaObj[1][1];
+            $esitiNegativi = $sestinaObj[2][1];
+            $nTerni = $sestinaObj[3][1];
+            $ambi = $sestinaObj[4][1];
+            $sestina = $sestinaObj[5][1];
+            $colpi = $sestinaObj[6][1];
+            $terno = $sestinaObj[7][1];
+
+    if(count($result) <= 0){
+            $insertResultTerni = $db->read("SELECT Colpi from terni where colpi = $colpi");
+            if($insertResultTerni[0]['Colpi'] == "")
+                     $insertResultTerni = $db->write("INSERT INTO terni (colpi) values ($colpi)");
+         
+            $insertResult = $db->write("INSERT INTO sest".$myYear." (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES (" .$esiti.", ". $esitiPositivi .", ". $esitiNegativi .", ". $ambi .", ". $nTerni .", ". $terno .", ". $sestina ." )");  
+      }         
+        else {
+          
+                                                                                                
+            $insertResultTerni = $db->write("INSERT INTO terni (colpi) values ($colpi)");
+                   $insertResult = $db->write("INSERT INTO sest".$myYear." (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES (" .$esiti.", ". $esitiPositivi .", ". $esitiNegativi .", ". $ambi .", ". $nTerni .", ". $terno .", ". $sestina ." )");  
+       }
       }
     $count++;
 }
 }
+
+
+
 /*
     foreach($sestina as $valore)
     {
