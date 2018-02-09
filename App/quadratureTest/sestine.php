@@ -159,7 +159,7 @@ function contaColpa(){
 function isMyComposition($ventiCinqueEstraz, $quad, $successive, $db, $myYear){
    
    
-
+$db = new DBM();
 //    if(count($ventiCinqueEstraz) <= 25) return false;	
     $sestina = array(0,0,0,0,0,0);
 $colpi = 0;
@@ -204,15 +204,18 @@ while($count < 2){
     if(count($result) <= 0){
             $insertResultTerni = $db->read("SELECT Colpi from terni where colpi = $colpi");
             if($insertResultTerni[0]['Colpi'] == "")
-                     $insertResultTerni = $db->write("INSERT INTO terni (colpi) values ($colpi)");
-         
-            $insertResult = $db->write("INSERT INTO sest".$myYear." (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES (" .$esiti.", ". $esitiPositivi .", ". $esitiNegativi .", ". $ambi .", ". $nTerni .", ". $terno .", ". $sestina ." )");  
+        
+                $db->write("INSERT INTO terni (colpi) values ($colpi)");
+
+            
+            $sestinaString = implode(" ",$sestina);
+           $db->write("INSERT INTO sest'$myYear' (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES ($esiti, $esitiPositivi, $esitiNegativi,$ambi,$nTerni,$terno,$sestinaString )");  
       }         
         else {
           
                                                                                                 
             $insertResultTerni = $db->write("INSERT INTO terni (colpi) values ($colpi)");
-                   $insertResult = $db->write("INSERT INTO sest".$myYear." (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES (" .$esiti.", ". $esitiPositivi .", ". $esitiNegativi .", ". $ambi .", ". $nTerni .", ". $terno .", ". $sestina ." )");  
+           $db->write("INSERT INTO sest'$myYear' (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES ($esiti, $esitiPositivi, $esitiNegativi,$ambi,$nTerni,$terno,$sestinaString )");  
        }
       }
     $count++;
