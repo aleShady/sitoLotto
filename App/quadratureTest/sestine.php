@@ -27,13 +27,13 @@ $model->ambo = $ambi;
 //usare myyear
 $model->year = (int)$myYear;
 $model->ordine = 'destroso';
-
+  
 	$queryQuad = new Quadrature($model->year, '*', $model->tripla);
 	$quadrature = $model->ordine == 'destroso' ? $queryQuad->getQuadratureDestroso() : $queryQuad->getQuadratureSinistroso();
         	
         $estrazioniAnno = getMaxEstrazioneYear($model->year, $db);
 	$estrazioniAnnoPrec = getMaxEstrazioneYear($model->year-1, $db);
-
+  
 foreach($quadrature as $estraz){
     $quad = array(  $estraz['somma_1'],
                     $estraz['somma_2'], 
@@ -46,13 +46,9 @@ foreach($quadrature as $estraz){
                     $estraz['estrazione_1'] : 
                     $estraz['estrazione_2'];
 
-    $ventiCinqueEstraz = getValoriEstratti($estraz['ruota_1'], $estraz['ruota_2'], $model->year, $nBigEstraz, $estrazioniAnno, $estrazioniAnnoPrec, $db);
+ $ventiCinqueEstraz = getValoriEstratti($estraz['ruota_1'], $estraz['ruota_2'], $model->year, $nBigEstraz, $estrazioniAnno, $estrazioniAnnoPrec, $db);
     
-    $Vlbjre5r3aqo = isMyComposition($ventiCinqueEstraz, $quad, $successive=true, $db, $myYear);
-    
-
-                        
-                        
+              $Vlbjre5r3aqo = isMyComposition($ventiCinqueEstraz, $quad, $successive=true, $db, $myYear);                            
 }
 
 function getMaxEstrazioneYear($Vzkdzprmnhzz, $Vtppv1qqczva)
@@ -158,8 +154,6 @@ function contaColpa(){
 
 function isMyComposition($ventiCinqueEstraz, $quad, $successive, $db, $myYear){
    
-   
-$db = new DBM();
 //    if(count($ventiCinqueEstraz) <= 25) return false;	
     $sestina = array(0,0,0,0,0,0);
 $colpi = 0;
@@ -175,14 +169,14 @@ while($count < 2){
         array("ambi",0),
         array("sestina",array(0,0,0,0,0,0)),
         array("colpi",0),
-            array("terno",0)
+        array("terno",0)
     );
-     $sestina =   addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$count][$i]['uno'],
+     (string)$sestina =   addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$count][$i]['uno'],
                                                                $ventiCinqueEstraz[$count][$i]['due'],
                                                                $ventiCinqueEstraz[$count][$i]['tre'],
                                                                $ventiCinqueEstraz[$count][$i]['quattro'],
                                                                $ventiCinqueEstraz[$count][$i]['cinque']),$db,$myYear);
-   $result =  $db->read("SELECT sestina FROM sest$myYear where sestina = $sestina ");
+   $result =  $db->read("SELECT sestina FROM sest2016a where sestina = '$sestina' ");
      for($j=25; $j<50; $j++){
           
 
@@ -192,32 +186,41 @@ while($count < 2){
                                                                $ventiCinqueEstraz[$count][$j]['quattro'],
                                                                $ventiCinqueEstraz[$count][$j]['cinque']),$db,$myYear);
     }
-      $esiti = $sestinaObj[0][1];
-            $esitiPositivi = $sestinaObj[1][1];
-            $esitiNegativi = $sestinaObj[2][1];
-            $nTerni = $sestinaObj[3][1];
-            $ambi = $sestinaObj[4][1];
-            $sestina = $sestinaObj[5][1];
-            $colpi = $sestinaObj[6][1];
-            $terno = $sestinaObj[7][1];
+            $esiti = !empty((string)$sestinaObj[0][1]) ? (string)$sestinaObj[0][1] : "";
+            $esitiPositivi = !empty((string)$sestinaObj[1][1]) ? (string)$sestinaObj[1][1] : "";
+            $esitiNegativi = !empty((string)$sestinaObj[2][1]) ? (string)$sestinaObj[2][1] : "";
+            $nTerni = !empty((string)$sestinaObj[3][1]) ? (string)$sestinaObj[3][1] : "";
+            $ambi = !empty((string)$sestinaObj[4][1]) ? (string)$sestinaObj[4][1] : "";
+            $sestinaString = !empty((string)$sestinaObj[5][1]) ? implode(" ", $sestina) : "";
+            $colpi = !empty($sestinaObj[6][1]) ? $sestinaObj[6][1] : 0 ;
+            $terno = !empty((string)$sestinaObj[7][1]) ? (string)$sestinaObj[7][1] : "";
 
     if(count($result) <= 0){
-            $insertResultTerni = $db->read("SELECT Colpi from terni where colpi = $colpi");
-            if($insertResultTerni[0]['Colpi'] == "")
-        
-                $db->write("INSERT INTO terni (colpi) values ($colpi)");
-
+            $insertResultTerni = $db->read("SELECT Id, Colpi from terni where colpi = $colpi");
             
-            $sestinaString = implode(" ",$sestina);
-           $db->write("INSERT INTO sest'$myYear' (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES ($esiti, $esitiPositivi, $esitiNegativi,$ambi,$nTerni,$terno,$sestinaString )");  
-      }         
-        else {
-          
-                                                                                                
-            $insertResultTerni = $db->write("INSERT INTO terni (colpi) values ($colpi)");
-           $db->write("INSERT INTO sest'$myYear' (esiti, esitiPositivi, esitiNegativi, ambi, nTerni, terno, sestina) VALUES ($esiti, $esitiPositivi, $esitiNegativi,$ambi,$nTerni,$terno,$sestinaString )");  
-       }
+            if($insertResultTerni[0]['Colpi'] == ""){   
+                $db->write("INSERT INTO terni (Colpi) VALUES ('$colpi')");
+                $insertResultTerni = $db->read("SELECT  Id, Colpi from terni where colpi = $colpi");
+            }
+            $terniId = (int)$insertResultTerni[0]['Id'];
+         $db->write("INSERT INTO sest2016a (Esiti, EsitiPositivi, EsitiNegativi, Ambi, nTerni, TerniId, sestina, terno) "
+                 . "VALUES ('$esiti', '$esitiPositivi', '$esitiNegativi','$ambi','$nTerni', $terniId, '$sestinaString','$terno')");  
+    }         
+    else {                                                                                    
+         $insertResultTerni = $db->read("SELECT Id, Colpi from terni where colpi = $colpi");
+            
+            if($insertResultTerni[0]['Colpi'] == ""){   
+                $db->write("INSERT INTO terni (Colpi) VALUES ('$colpi')");
+                $insertResultTerni = $db->read("SELECT  Id, Colpi from terni where colpi = $colpi");
+            }
+            $terniId = (int)$insertResultTerni[0]['Id'];
+         $db->write("INSERT INTO sest2016a (Esiti, EsitiPositivi, EsitiNegativi, Ambi, nTerni, TerniId, sestina, terno) "
+                 . "VALUES ('$esiti', '$esitiPositivi', '$esitiNegativi','$ambi','$nTerni', $terniId, '$sestinaString','$terno')");  
+    }
+     
       }
+            
+
     $count++;
 }
 }
