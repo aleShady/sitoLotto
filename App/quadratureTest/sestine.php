@@ -171,12 +171,13 @@ while($count < 2){
         array("colpi",0),
         array("terno",0)
     );
-     (string)$sestina =   addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$count][$i]['uno'],
+     $sestina =   addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$count][$i]['uno'],
                                                                $ventiCinqueEstraz[$count][$i]['due'],
                                                                $ventiCinqueEstraz[$count][$i]['tre'],
                                                                $ventiCinqueEstraz[$count][$i]['quattro'],
                                                                $ventiCinqueEstraz[$count][$i]['cinque']),$db,$myYear);
-   $result =  $db->read("SELECT sestina FROM sest2016a where sestina = '$sestina' ");
+    $sestinaString = implode(" ",$sestina);
+     $result =  $db->read("SELECT sestina FROM sest2016a where sestina =  '$sestinaString' ");
      for($j=25; $j<50; $j++){
           
 
@@ -195,7 +196,7 @@ while($count < 2){
             $colpi = !empty($sestinaObj[6][1]) ? $sestinaObj[6][1] : 0 ;
             $terno = !empty((string)$sestinaObj[7][1]) ? (string)$sestinaObj[7][1] : "";
 
-    if(count($result) <= 0){
+    if(sizeof($result) <= 0){
             $insertResultTerni = $db->read("SELECT Id, Colpi from terni where colpi = $colpi");
             
             if($insertResultTerni[0]['Colpi'] == ""){   
@@ -213,9 +214,8 @@ while($count < 2){
                 $db->write("INSERT INTO terni (Colpi) VALUES ('$colpi')");
                 $insertResultTerni = $db->read("SELECT  Id, Colpi from terni where colpi = $colpi");
             }
-            $terniId = (int)$insertResultTerni[0]['Id'];
-         $db->write("INSERT INTO sest2016a (Esiti, EsitiPositivi, EsitiNegativi, Ambi, nTerni, TerniId, sestina, terno) "
-                 . "VALUES ('$esiti', '$esitiPositivi', '$esitiNegativi','$ambi','$nTerni', $terniId, '$sestinaString','$terno')");  
+            $terniId = (int)$insertResultTerni[0]['Id']; table_name
+         $db->write("UPDATE sest2016a SET  esiti = '$esiti', esitiPositivi = '$esitiPositivi', esitiNegativi = '$esitiNegativi', ambi = '$ambi', nTerni = '$nTerni', terniId = $terniId, '$sestinaString','$terno'");  
     }
      
       }
