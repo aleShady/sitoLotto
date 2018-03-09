@@ -27,7 +27,7 @@ $model->ambo = $ambi;
 //usare myyear
 $model->year = (int)$myYear;
 $model->ordine = 'destroso';
-  
+  $db->write("TRUNCATE table sest$myYear");
 	$queryQuad = new Quadrature($model->year, '*', $model->tripla);
 	$quadrature = $model->ordine == 'destroso' ? $queryQuad->getQuadratureDestroso() : $queryQuad->getQuadratureSinistroso();
         	
@@ -48,7 +48,7 @@ foreach($quadrature as $estraz){
 
  $ventiCinqueEstraz = getValoriEstratti($estraz['ruota_1'], $estraz['ruota_2'], $model->year, $nBigEstraz, $estrazioniAnno, $estrazioniAnnoPrec, $db);
     
-              $Vlbjre5r3aqo = isMyComposition($ventiCinqueEstraz, $quad, $successive=true, $db, $myYear);                            
+              $Vlbjre5r3aqo = isMyComposition($ventiCinqueEstraz, $quad, $successive=true, $db, $myYear, $tripla, $ambi);                            
 }
 
 function getMaxEstrazioneYear($Vzkdzprmnhzz, $Vtppv1qqczva)
@@ -86,19 +86,21 @@ function checkSestina($sestinaObj, $sestina, $quad,$colpi, $posizione, $estraz)
 { //DA METTERE DENTRO UN CICLO CHE SCORRA LA SESTINA e le estrazioni.
     $countVincita = 0; //AMBO TERNO ECC.
   //CERCARE NEL DB SE ESISTE LA SESTINA SE SI GLI AGGIORNO I VALORI
-   
+   if($estraz[0] != null){
     for($i=0; $i<6; $i++)
     {
+        
         foreach($estraz as $singola){
             if($quad[i] == $singola)
             {
                 $countVincita++;
                 if(countVincita <= 3)
-                $terno +=  $singola . "-";
+                    $terno +=  $singola . "-";
                 
             }
         }
     }
+   }
      $esiti++;
 //     $colpi++;
     if($countVincita < 2){
@@ -152,7 +154,7 @@ function contaColpa(){
                    
 }
 
-function isMyComposition($ventiCinqueEstraz, $quad, $successive, $db, $myYear){
+function isMyComposition($ventiCinqueEstraz, $quad, $successive, $db, $myYear, $trip, $amb){
    
 //    if(count($ventiCinqueEstraz) <= 25) return false;	
     $sestina = array(0,0,0,0,0,0);
@@ -177,7 +179,7 @@ while($count < 2){
                                                                $ventiCinqueEstraz[$count][$i]['quattro'],
                                                                $ventiCinqueEstraz[$count][$i]['cinque']),$db,$myYear);
     $sestinaString = implode(" ",$sestina);
-     $result =  $db->read("SELECT sestina FROM sest2016a where sestina =  '$sestinaString' ");
+     $result =  $db->read("SELECT sestina FROM sest$myYear where sestina =  '$sestinaString' ");
      for($j=25; $j<50; $j++){
           
 
@@ -204,8 +206,8 @@ while($count < 2){
                 $insertResultTerni = $db->read("SELECT  Id, Colpi from terni where colpi = $colpi");
             }
             $terniId = (int)$insertResultTerni[0]['Id'];
-         $db->write("INSERT INTO sest2016a (Esiti, EsitiPositivi, EsitiNegativi, Ambi, nTerni, TerniId, sestina, terno) "
-                 . "VALUES ('$esiti', '$esitiPositivi', '$esitiNegativi','$ambi','$nTerni', $terniId, '$sestinaString','$terno')");  
+         $db->write("INSERT INTO sest$myYear (Esiti, EsitiPositivi, EsitiNegativi, Ambi, nTerni, TerniId, sestina, terno, trip, amb) "
+                 . "VALUES ('$esiti', '$esitiPositivi', '$esitiNegativi','$ambi','$nTerni', $terniId, '$sestinaString','$terno', '$trip', '$amb')");  
     }         
     else {                                                                                    
          $insertResultTerni = $db->read("SELECT Id, Colpi from terni where colpi = $colpi");
@@ -214,8 +216,25 @@ while($count < 2){
                 $db->write("INSERT INTO terni (Colpi) VALUES ('$colpi')");
                 $insertResultTerni = $db->read("SELECT  Id, Colpi from terni where colpi = $colpi");
             }
-            $terniId = (int)$insertResultTerni[0]['Id']; table_name
-         $db->write("UPDATE sest2016a SET  esiti = '$esiti', esitiPositivi = '$esitiPositivi', esitiNegativi = '$esitiNegativi', ambi = '$ambi', nTerni = '$nTerni', terniId = $terniId, '$sestinaString','$terno'");  
+            $terniId = (int)$insertResultTerni[0]['Id'];
+                       $sestinaResult = $db->read("SELECT  * from sest$myYear where sestina = '$sestinaString'");
+
+        foreach($sestinaResult as $item) {
+            $esiti += (int)$item['Esiti'];
+            $esitiPositivi += (int)$item['EsitiPositivi'];
+            $esitiNegativi += (int)$item['EsitiNegativi'] ;
+            $ambi +=(int)$item['Ambi'];
+            $nTerni += (int)$item['nTerni'];
+            $terno = $item[0]['terno'];
+        }
+           $esiti = (string)$esiti;
+           $esitiPositivi = (string)$esitiPositivi; 
+           $esitiNegativi = (string)$esitiNegativi;
+           $ambi = (string)$ambi;
+           $nTerni = (string)$nTerni;
+           
+         $db->write("UPDATE sest$myYear SET  esiti = '$esiti', esitiPositivi = '$esitiPositivi', esitiNegativi = '$esitiNegativi', ambi = '$ambi', nTerni = '$nTerni', terniId = $terniId, terno = '$terno' "
+                 . "where sestina = '$sestinaString' AND trip = '$trip' AND amb = '$amb' ");  
     }
      
       }
