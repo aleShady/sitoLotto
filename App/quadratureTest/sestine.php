@@ -81,42 +81,50 @@ function addOccurenceComp($quad, $sestina, $estraz)
         
         return $sestina;
 }
-
-function checkSestina($sestinaObj, $sestina, $quad,$colpi, $posizione, $estraz)
-{ //DA METTERE DENTRO UN CICLO CHE SCORRA LA SESTINA e le estrazioni.
-    $countVincita = 0; //AMBO TERNO ECC.
-  //CERCARE NEL DB SE ESISTE LA SESTINA SE SI GLI AGGIORNO I VALORI
-   if($estraz[0] != null){
+function sestinaValidator($estraz, $quad, $array){
+  
+foreach ($estraz as $key => $var) {
+    $estraz[$key] = (int)$var;
+}
     for($i=0; $i<6; $i++)
-    {
-        
-        foreach($estraz as $singola){
-            if($quad[i] == $singola)
+    { 
+        for($j=0; $j<sizeof($estraz); $j++){  
+            if($quad[$i] == $estraz[$j])
             {
-                $countVincita++;
-                if(countVincita <= 3)
-                    $terno +=  $singola . "-";
-                
+               $array[0][1]++;
+               if($array[0][1] <= 3)
+                  $array[1][1] += (string)$estraz[$j] . "-";
             }
         }
     }
+    
+    return $array;
+}
+function checkSestina($sestinaObj, $sestina, $quad,$colpi, $posizione, $estraz)
+{ //DA METTERE DENTRO UN CICLO CHE SCORRA LA SESTINA e le estrazioni.
+  $array= array(      
+        array("countVincita",0),
+        array("terno",""));
+  //CERCARE NEL DB SE ESISTE LA SESTINA SE SI GLI AGGIORNO I VALORI
+   if($estraz[0] != null){
+       $array = sestinaValidator($estraz, $quad, $array);
    }
      $esiti++;
 //     $colpi++;
-    if($countVincita < 2){
+    if($array[0][1] < 2){
                 $esitiNegativi++;
                 $colpi++;
     }
-    else if($countVincita == 2)
+    else if($array[0][1] == 2)
     {
         $esitiPositivi++;
         $ambi++;
     }
-    else if($countVincita == 3)
+    else if($array[0][1] == 3)
     {
         $esitiPositivi++;
         $nterni++;
-        $terno += ";";
+        $array[1][1] += ";";
         
 
     }
@@ -127,8 +135,8 @@ function checkSestina($sestinaObj, $sestina, $quad,$colpi, $posizione, $estraz)
          $sestinaObj[4][1] += $ambi;
          $sestinaObj[5][1] = $sestina;
          
-         if($countVincita == 3){
-             $sestinaObj[7][1] = $terno;
+         if($array[0][1] == 3){
+             $sestinaObj[7][1] = $array[1][1];
              $sestinaObj[6][1] += $colpi;   
          }      
          else{
@@ -171,13 +179,13 @@ while($count < 2){
         array("ambi",0),
         array("sestina",array(0,0,0,0,0,0)),
         array("colpi",0),
-        array("terno",0)
+        array("terno","")
     );
      $sestina =   addOccurenceComp($quad, $sestina, array(     $ventiCinqueEstraz[$count][$i]['uno'],
                                                                $ventiCinqueEstraz[$count][$i]['due'],
                                                                $ventiCinqueEstraz[$count][$i]['tre'],
                                                                $ventiCinqueEstraz[$count][$i]['quattro'],
-                                                               $ventiCinqueEstraz[$count][$i]['cinque']),$db,$myYear);
+                                                               $ventiCinqueEstraz[$count][$i]['cinque']));
     $sestinaString = implode(" ",$sestina);
      $result =  $db->read("SELECT sestina FROM sest$myYear where sestina =  '$sestinaString' ");
      for($j=25; $j<50; $j++){
@@ -187,7 +195,7 @@ while($count < 2){
                                                                $ventiCinqueEstraz[$count][$j]['due'],
                                                                $ventiCinqueEstraz[$count][$j]['tre'],
                                                                $ventiCinqueEstraz[$count][$j]['quattro'],
-                                                               $ventiCinqueEstraz[$count][$j]['cinque']),$db,$myYear);
+                                                               $ventiCinqueEstraz[$count][$j]['cinque']));
     }
             $esiti = !empty((string)$sestinaObj[0][1]) ? (string)$sestinaObj[0][1] : "";
             $esitiPositivi = !empty((string)$sestinaObj[1][1]) ? (string)$sestinaObj[1][1] : "";
