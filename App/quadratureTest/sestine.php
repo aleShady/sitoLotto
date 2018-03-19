@@ -24,11 +24,23 @@ $successive = true;
 $model= new stdClass;
 $model->tripla = $tripla;
 $model->ambo = $ambi;
+$arrayAmbi = array();
+$isotopi = false;
+if($model->ambo == 'uniti')
+	{
+		$arrayAmbi = array('1-2','1-5','2-3','3-4','4-5');
+		$isotopi = false;
+	}
+	else
+	{
+		$arrayAmbi = array('1-3','1-4','2-4','2-5','3-5');
+		$isotopi = true;
+	}
 //usare myyear
 $model->year = (int)$myYear;
 $model->ordine = 'destroso';
   $db->write("TRUNCATE table sest$myYear");
-	$queryQuad = new Quadrature($model->year, '*', $model->tripla);
+	$queryQuad = new Quadrature($model->year, $arrayAmbi, $model->tripla, $isotopi);
 	$quadrature = $model->ordine == 'destroso' ? $queryQuad->getQuadratureDestroso() : $queryQuad->getQuadratureSinistroso();
         	
         $estrazioniAnno = getMaxEstrazioneYear($model->year, $db);
