@@ -34,23 +34,23 @@
     	
         <div id="HMI">
         	Seleziona Anno
-            <select id="cmb_Year" class="selectCustom" style="margin-right: 100px">
+            <select id="cmb_Year" name="cmb_Year" class="selectCustom" style="margin-right: 100px">
 				<?php
                 for($i=date("Y"); $i>=1871; $i--)
                 	echo '<option value="' . $i . '">' . $i . '</option>';
                 ?>
             </select>
-            Composizione
+<!--            Composizione-->
             <input type="text" id="txtSestina" class="TextboxCustom" style="display: none; margin-right: 100px">
             
             Ordine
-            <select id="cmb_Ordine" class="selectCustom" style="margin-right: 100px">
+            <select id="cmb_Ordine" class="selectCustom" style="margin-right: 100px; ">
                 <option value="destroso">Destroso</option>
                 <option value="sinistroso">Sinistroso</option>
             </select>
             
             Tripla
-            <select id="cmb_Tripla" class="selectCustom">
+            <select id="cmb_Tripla" name="cmb_Tripla" class="selectCustom">
                 <option value="1-4-7">1-4-7</option>
                 <option value="2-5-8">2-5-8</option>
                 <option value="3-6-9">3-6-9</option>
@@ -58,14 +58,24 @@
                         <input type="button" value="Ricerca" id="btnRicerca" title="Ricerca">
 
             <input type="button" value="AGGIORNA" id="btnEsegui" title="Esegui">
-            <div style="clear:both"></div>
         </div>
-        <div id="noData" style="font-size:30px;font-weight:bold;color:#CCC;padding-top:300px;text-align:center;display:none;">
-       	 	RICERCA FINITA SENZA RISULTATI
-        </div>
-        <div id="container" style="padding-left:120px;padding-top:20px;display:none;">
+       <br/>
+        <div id="container" style="">
         
-        	<div id="sestinaValues">
+           <div class="table-responsive">
+            <table id="sestine" style="width: 100%;" class="table hover table-striped table-bordered "  >
+                        <thead>
+                            <tr>
+                                <th>Sestina</th>
+                                <th>EsitiPositivi</th>
+                                <th>EsitiNegativi</th>                                
+                                <th>Ambi</th>
+                                <th>Terni</th>
+                                <th>Quaterne</th>
+                                <th>Tripla</th>
+                            </tr>
+                        </thead>
+                    </table>
             <!--<div class="sestinaItem sestinaItemBorderRight">0</div><div class="sestinaItem sestinaItemBorderRight">0</div><div class="sestinaItem sestinaItemBorderRight">1</div><div class="sestinaItem sestinaItemBorderRight">2</div><div class="sestinaItem sestinaItemBorderRight">3</div><div class="sestinaItem">4</div>
             --></div>
            	<div style="clear:both"></div>
@@ -94,38 +104,52 @@
 </html>
 
 <script type="text/javascript">
-$(document).ready(function(){
-    $('#sestine').DataTable( {
-    paging: true,
-     responsive: true,
-     
-} );
 
-
-function showSestine() {
-
-    var anno= $('#cmb_Year').val();
-    var tripla= $('#cmb_Tripla').val();
-
-        if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp = new XMLHttpRequest();
-        } else {
-            // code for IE6, IE5
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("sestinaValues").innerHTML = this.responseText;
-            }
-        };
-        xmlhttp.open("GET","stampa.php?anno="+anno,true);
-        xmlhttp.send();
-    }
 
 $("#btnRicerca").click(function(){
-    showSestine();
+    var anno= $('select[name=cmb_Year]').val();
+        var tripla= $('select[name=cmb_Tripla]').val();
+    $.ajax({
+url: "stampa.php",
+type: "get",
+data: { anno: anno, tripla: tripla }
+}).done(function (result) {
+debugger;
+var jsdata = JSON.parse(result);
+$('#sestine').dataTable().fnAddData(jsdata);}).fail(function (jqXHR, textStatus, errorThrown) {
+    
 });
-
 });
+// needs to implement if it fails
+    
+    
+    
+    
+    
+    
+  $(document).ready(function(){
+             
+ $("#sestine").DataTable({
+ "dataType": "json",
+  "cache": false,
+"columns": [
+    { "data": "sestina" },
+    { "data": "EsitiPositivi" },
+    { "data": "EsitiNegativi" },
+    { "data": "Ambi" },
+    { "data": "nTerni" },
+    { "data": "nQuaterne" },
+    { "data": "trip" }
+  ],
+processing: true,
+retrieve: true
+});
+  
+      
+      
+  });  
+    
+    
+ 
  </script>
+ 
