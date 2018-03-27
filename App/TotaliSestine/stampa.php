@@ -1,25 +1,23 @@
 
 <?php
-  include '../../Classes/DBM.php';
+  
+  ini_set('memory_limit', '-1');
+        include '../../Classes/DBM.php';
   $db = new DBM();
  
 $anno = strval($_GET['anno']);
 $tripla = strval($_GET['tripla']);
+$ord = strval($_GET['ord']);
 
   $con = $db->read ( "SELECT * FROM sest$anno" );
-if (!$con) {
-    die('Could not connect: ' . mysqli_error($con));
+if (count($con) == 0) {
+  $queryResult['Errore'] = "Nessun dato presente in tabella";
 }
 
-$sql="SELECT sestina, EsitiPositivi, EsitiNegativi, Ambi, nTerni, nQuaterne, trip FROM sest$anno WHERE trip = '$tripla'";
-$result = $db->read($sql);
+$sql="SELECT sestina, EsitiPositivi, EsitiNegativi, Ambi, nTerni, nQuaterne, trip, ord FROM sest$anno WHERE trip = '$tripla' and ord = '$ord'";
+$queryResult = $db->read($sql);
 
 
-//foreach($result as $row){
-//    $data = array(
-//        array('sestina'=>$row['sestina'], 'ambi'=>$row['Ambi'], 'terni'=>$row['nTerni'], 'quaterne' => $row['nQuaterne'], 'tripla' =>  $row['trip'])
-//    );          
-// }
 
-  echo json_encode($result);
+  echo json_encode($queryResult);
 ?>
