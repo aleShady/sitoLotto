@@ -4,8 +4,8 @@ include '../../Classes/DBM.php';
 $db = new DBM();
 $myYear =1871;
 while($myYear <= 2020){
-     $db->write("ALTER TABLE sest$myYear add composizione varchar(255)");
-    $myYear++;
+     $db->write("ALTER TABLE sest$myYear ADD ord VARCHAR(255);");
+     $myYear++;
     
 }
     
