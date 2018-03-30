@@ -60,6 +60,16 @@
                 <option value="2-5-8">2-5-8</option>
                 <option value="3-6-9">3-6-9</option>
             </select>
+                 <table style="vertical-align:top;display:inline-block;margin-left:100px;">
+            	<tr>
+                	<td align="right">Ambi uniti</td>
+                    <td><input type="radio" name="isotopi" value="uniti"checked="checked"></td>
+                </tr>
+                <tr>
+                	<td>Ambi non uniti isotopi</td>
+                    <td><input type="radio" name="isotopi" value="unitiN"></td>
+                </tr>
+            </table>
             
             <input type="button" value="ESTRAI" id="btnRicerca" title="ESTRAI">
 
@@ -68,7 +78,7 @@
         </div>
      
       
-        <div id="container" style="display:none;" >
+        <div id="container" class="nascondimi" style="display:none;" >
         	<div id="sestinaValues">
             <!--<div class="sestinaItem sestinaItemBorderRight">0</div><div class="sestinaItem sestinaItemBorderRight">0</div><div class="sestinaItem sestinaItemBorderRight">1</div><div class="sestinaItem sestinaItemBorderRight">2</div><div class="sestinaItem sestinaItemBorderRight">3</div><div class="sestinaItem">4</div>
             --></div>
@@ -124,7 +134,6 @@
 </html>
 
 <script type="text/javascript">
-
 
 $("#btnRicerca").click(function(){
     

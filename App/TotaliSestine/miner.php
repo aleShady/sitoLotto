@@ -7,12 +7,16 @@
 //	             <input type="button" value="Ricerca" id="btnRicerca" title="Ricerca">
 
 	$Vtppv1qqczva = new DBM();
-	$Vwvjd4q4sfbo = new Quadrature($Vfs2niaige2t->year, '*', $Vfs2niaige2t->tripla);
+        $isotopi = false;
+        $count = 0;
+                $Vtppv1qqczva->write("TRUNCATE table sest$Vfs2niaige2t->year");
+
+        while($count <= 1){
+	$Vwvjd4q4sfbo = new Quadrature($Vfs2niaige2t->year, '*', $Vfs2niaige2t->tripla, $isotopi);
 	$Vyfxn1pwvxar = $Vfs2niaige2t->ordine == 'destroso' ? $Vwvjd4q4sfbo->getQuadratureDestroso() : $Vwvjd4q4sfbo->getQuadratureSinistroso();
 	$Vfs2niaige2tYearEstrazioni = getMaxEstrazioneYear($Vfs2niaige2t->year, $Vtppv1qqczva);
 	$Vskj4qd0hwyl	= getMaxEstrazioneYear($Vfs2niaige2t->year-1, $Vtppv1qqczva);	
 	$Vfs2niaige2t->composizione = explode('-', $Vfs2niaige2t->composizione);
-        $Vtppv1qqczva->write("TRUNCATE table sest$Vfs2niaige2t->year");
 	foreach($Vfs2niaige2t->composizione as $V45qtgu112qa => $Vm1my3thfa0y)	$Vfs2niaige2t->composizione[$V45qtgu112qa] = intval($Vm1my3thfa0y);
 	
 	$Voungjt1lyll = array();
@@ -71,9 +75,10 @@
 		}	
 	}
 	$Voungjt1lyll['fails'] = $Vuz3sbxdl25x;
-	$Voungjt1lyll['positivi'] = count($Voungjt1lyll);     
-	echo json_encode($Voungjt1lyll);
-
+	$Voungjt1lyll['positivi'] = count($Voungjt1lyll);  
+        $count++;
+	$isotopi = true;
+        }echo json_encode($Voungjt1lyll);
  
 
 	function getValoriEstratti($Vjhqqhgfyiag, $Vkcfgrcfdwa5, $Vzkdzprmnhzz, $Vdbkqgspzztj, $Vbexasm3f1c0, $Vc12haoiuusd, $Vmjyb4nwthls)
