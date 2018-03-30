@@ -29,7 +29,7 @@
 		{
 			$Vovyrnelfi0z = array_merge(array(), $Vwotg4wet5ef);
 			orderArrays($Vlbjre5r3aqo,$Vovyrnelfi0z);
-			$Vkxbfwlelran = getResSestine($Vyfxn1pwvxar[1], $Vovyrnelfi0z, $Vwotg4wet5ef, $Vtppv1qqczva, $Vfs2niaige2t->year,$Vlbjre5r3aqo, $Vfs2niaige2t->tripla, $Vfs2niaige2t->ordine );
+			$Vkxbfwlelran = getResSestine($Vyfxn1pwvxar[0], $Vovyrnelfi0z, $Vwotg4wet5ef, $Vtppv1qqczva, $Vfs2niaige2t->year,$Vlbjre5r3aqo, $Vfs2niaige2t->tripla, $Vfs2niaige2t->ordine );
 			if($Vkxbfwlelran != false)
 			{
 				$Voungjt1lyll[] = array(
@@ -213,8 +213,9 @@
            }
         return $array;
     }
-        function checkSestina($sestinaObj, $sestina, $quad, $estraz)
+        function checkSestina($sestinaObj, $sestina, $quad, $estraz, $esitiPositivi, $esitiNegativi, $ambi, $nTerni, $nQuaterne)
         { //DA METTERE DENTRO UN CICLO CHE SCORRA LA SESTINA e le estrazioni.
+           
             $array= array(      
                   array("countVincita",0),
                   array("terno",""));
@@ -268,32 +269,37 @@
         
 	function getResSestine($Vyfxn1pwvxar, $Vwvjd4q4sfboValues, $quad, $db, $myYear, $sestina, $trip, $ord)
 	{
-              $sestinaObj= array(      
-        array("esiti",0),
-        array("esitiPositivi",0),
-        array("esitiNegativi",0),
-        array("nterni",0),
-        array("ambi",0),
-        array("sestina",array(0,0,0,0,0,0)),
-        array("colpi",0),
-        array("terno","")
-    );
+                $numAmbi =0;
+                $numTerni = 0;
+                $numQuaterne =0;
+                $EsitiP =0;
+                $EsitiN =0;
+                $sestinaObj= array(      
+                array("esiti",0),
+                array("esitiPositivi",0),
+                array("esitiNegativi",0),
+                array("nterni",0),
+                array("ambi",0),
+                array("sestina",array(0,0,0,0,0,0)),
+                array("colpi",0),
+                array("terno","")
+                          );
 		$V1riot0zwstj = array();
 		$Vwmmg3o5pnns = false;
 		$Vqkyqrmm4mxi = count($Vyfxn1pwvxar);
 		for($V3fceidmdbsb=25; $V3fceidmdbsb<$Vqkyqrmm4mxi; $V3fceidmdbsb++)
 		{
-                    $sestinaObj = checkSestina($sestinaObj, $sestina, $quad, array($Vyfxn1pwvxar[$V3fceidmdbsb]['uno'],
-                        $Vyfxn1pwvxar[$V3fceidmdbsb]['due'],
-                            $Vyfxn1pwvxar[$V3fceidmdbsb]['tre'],
-                            $Vyfxn1pwvxar[$V3fceidmdbsb]['quattro'],
-                            $Vyfxn1pwvxar[$V3fceidmdbsb]['cinque']));
-                    $sestinaString = implode(" ",array_map('strval', $sestinaObj[5][1]));
-                    $nTerni = (string)$sestinaObj[3][1];
-                    $ambi = (string)$sestinaObj[4][1];
-                    $nQuaterne = (string)$sestinaObj[8][1];
-                    $EsitiNegativi = (string)$sestinaObj[2][1];
-                    $EsitiPositivi = (string)$sestinaObj[1][1];
+//                    $sestinaObj = checkSestina($sestinaObj, $sestina, $quad, array($Vyfxn1pwvxar[$V3fceidmdbsb]['uno'],
+//                        $Vyfxn1pwvxar[$V3fceidmdbsb]['due'],
+//                            $Vyfxn1pwvxar[$V3fceidmdbsb]['tre'],
+//                            $Vyfxn1pwvxar[$V3fceidmdbsb]['quattro'],
+//                            $Vyfxn1pwvxar[$V3fceidmdbsb]['cinque']), $esitiPositivi, $esitiNegativi, $ambi, $nterni, $nQuaterne );
+//                    $sestinaString = implode(" ",array_map('strval', $sestinaObj[5][1]));
+//                    $numTerni = (string)$sestinaObj[3][1];
+//                    $numAmbi = (string)$sestinaObj[4][1];
+//                    $numQuaterne = (string)$sestinaObj[8][1];
+//                    $EsitiN = (string)$sestinaObj[2][1];
+//                    $EsitiP = (string)$sestinaObj[1][1];
 
 			$Vlbjre5r3aqo = array('','','','','','');
 			
@@ -316,21 +322,37 @@
 			$Vgpbrdjsz50hEmpty = array_count_values($Vlbjre5r3aqo);
 			if($Vgpbrdjsz50hEmpty[""] != 6)
 			{
+                            
 				$V1riot0zwstj[] = $Vlbjre5r3aqo;
+                                if($Vgpbrdjsz50hEmpty[""] == 4){
+                                    $EsitiP++;
+                                    $numAmbi++;
+                                }
+                                if($Vgpbrdjsz50hEmpty[""] == 3){
+                                    $EsitiP++;
+                                    $numTerni++;
+                                }
+                                if($Vgpbrdjsz50hEmpty[""] == 2){
+                                    $EsitiP++;
+                                    $numQuaterne++;
+                                }
+                                if($Vgpbrdjsz50hEmpty[""] == 5)$EsitiN++;
 				if($Vgpbrdjsz50hEmpty[""] <= 4)
 					$Vwmmg3o5pnns = true;
-			}
+			}else $EsitiN++;
 		}
-		$result =  $db->read("SELECT sestina, Ambi, nTerni FROM sest$myYear where sestina =  '$sestinaString' AND trip = '$trip' AND ord = '$ord'  ");
+                  $sestinaString = implode(" ",array_map('strval', $sestina));
+
+		$result =  $db->read("SELECT sestina, Ambi, nTerni, nQuaterne, EsitiPositivi, EsitiNegativi FROM sest$myYear where sestina =  '$sestinaString' AND trip = '$trip' AND ord = '$ord'  ");
                      if(sizeof($result) <= 0)
-                            $db->write("INSERT INTO sest$myYear (EsitiPositivi, EsitiNegativi, Ambi, nTerni, sestina, nQuaterne, trip, ord) VALUES ('$EsitiPositivi', '$EsitiNegativi','$ambi','$nTerni', '$sestinaString', '$nQuaterne', '$trip', '$ord')"); 
+                            $db->write("INSERT INTO sest$myYear (EsitiPositivi, EsitiNegativi, Ambi, nTerni, sestina, nQuaterne, trip, ord) VALUES ('$EsitiP', '$EsitiN','$numAmbi','$numTerni', '$sestinaString', '$numQuaterne', '$trip', '$ord')"); 
                      else{
-                           $ambi += intval($result[0]["Ambi"]);
-                           $nTerni += intval($result[0]["nTerni"]);
-                           $nQuaterne += intval($result[0]["nQuaterne"]);
-                           $EsitiPositivi += intval($result[0]["EsitiPositivi"]);
-                           $EsitiNegativi += intval($result[0]["EsitiNegativi"]);
-                            $db->write("UPDATE sest$myYear SET  EsitiPositivi = '$EsitiPositivi', EsitiNegativi = '$EsitiNegativi', ambi = '$ambi', nTerni = '$nTerni', nQuaterne = '$nQuaterne' where sestina = '$sestinaString' AND trip = '$trip' AND ord = '$ord'"); 
+                           $numAmbi += intval($result[0]["Ambi"]);
+                           $numTerni += intval($result[0]["nTerni"]);
+                           $numQuaterne += intval($result[0]["nQuaterne"]);
+                           $EsitiP += intval($result[0]["EsitiPositivi"]);
+                           $EsitiN += intval($result[0]["EsitiNegativi"]);
+                            $db->write("UPDATE sest$myYear SET  EsitiPositivi = '$EsitiP', EsitiNegativi = '$EsitiN', ambi = '$numAmbi', nTerni = '$numTerni', nQuaterne = '$numQuaterne' where sestina = '$sestinaString' AND trip = '$trip' AND ord = '$ord'"); 
 
                      }
 		if($Vwmmg3o5pnns)
