@@ -399,10 +399,10 @@ $i++;
             	Tabelloni ambi, terne e quaterne
             </div>
         </div>
-		<div class="item" url="quadratureTest">
-        	<div class="title">quadrature 2</div>
+		<div class="item" url="TotaliSestine">
+        	<div class="title">Sestine</div>
             <div class="content">
-            	Tabelloni ambi, terne e quaterne
+            	elenco sestine
             </div>
         </div>
     </center>
