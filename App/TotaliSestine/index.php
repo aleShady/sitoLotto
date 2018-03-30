@@ -60,16 +60,7 @@
                 <option value="2-5-8">2-5-8</option>
                 <option value="3-6-9">3-6-9</option>
             </select>
-                 <table style="vertical-align:top;display:inline-block;margin-left:100px;">
-            	<tr>
-                	<td align="right">Ambi uniti</td>
-                    <td><input type="radio" name="isotopi" value="uniti"checked="checked"></td>
-                </tr>
-                <tr>
-                	<td>Ambi non uniti isotopi</td>
-                    <td><input type="radio" name="isotopi" value="unitiN"></td>
-                </tr>
-            </table>
+             
             
             <input type="button" value="ESTRAI" id="btnRicerca" title="ESTRAI">
 
