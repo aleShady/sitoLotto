@@ -98,7 +98,7 @@
                                 <th>Quaterne</th>
                                 <th>Tripla</th>
                                 <th>Ordine</th>
-
+                                <th>Tipo</th>
                             </tr>
                         </thead>
                     </table>
@@ -165,7 +165,11 @@ $("#btnRicerca").click(function(){
     
     
   $(document).ready(function(){
-             
+      window.setInterval(function(){
+          
+$.active    == 0 ?   $('.spinner').hide() : "";
+}, 5000);
+        
  $("#sestine").DataTable({
  "dataType": "json",
   "cache": false,
@@ -177,7 +181,8 @@ $("#btnRicerca").click(function(){
     { "data": "nTerni" },
     { "data": "nQuaterne" },
     { "data": "trip" },
-    { "data": "ord" }
+    { "data": "ord" },
+     { "data": "isotopi" }
 
   ],
 processing: true,

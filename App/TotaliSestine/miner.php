@@ -9,7 +9,9 @@
 	$Vtppv1qqczva = new DBM();
         $isotopi = false;
         $count = 0;
-                $Vtppv1qqczva->write("TRUNCATE table sest$Vfs2niaige2t->year");
+                $Vtppv1qqczva->write("delete from   sest$Vfs2niaige2t->year
+where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
+ ");
 
         while($count <= 1){
 	$Vwvjd4q4sfbo = new Quadrature($Vfs2niaige2t->year, '*', $Vfs2niaige2t->tripla, $isotopi);
@@ -78,7 +80,8 @@
 	$Voungjt1lyll['positivi'] = count($Voungjt1lyll);  
         $count++;
 	$isotopi = true;
-        }echo json_encode($Voungjt1lyll);
+        }
+        echo json_encode($Voungjt1lyll);
  
 
 	function getValoriEstratti($Vjhqqhgfyiag, $Vkcfgrcfdwa5, $Vzkdzprmnhzz, $Vdbkqgspzztj, $Vbexasm3f1c0, $Vc12haoiuusd, $Vmjyb4nwthls)
@@ -354,14 +357,14 @@ else
         
 		$result =  $db->read("SELECT sestina, Ambi, nTerni, nQuaterne, EsitiPositivi, EsitiNegativi FROM sest$myYear where sestina =  '$sestinaString' AND trip = '$trip' AND ord = '$ord' and isotopi = '$iso' ");
                      if(sizeof($result) <= 0)
-                            $db->write("INSERT INTO sest$myYear (EsitiPositivi, EsitiNegativi, Ambi, nTerni, sestina, nQuaterne, trip, ord) VALUES ('$EsitiP', '$EsitiN','$numAmbi','$numTerni', '$sestinaString', '$numQuaterne', '$trip', '$ord')"); 
+                            $db->write("INSERT INTO sest$myYear (EsitiPositivi, EsitiNegativi, Ambi, nTerni, sestina, nQuaterne, trip, ord, isotopi) VALUES ('$EsitiP', '$EsitiN','$numAmbi','$numTerni', '$sestinaString', '$numQuaterne', '$trip', '$ord', '$iso')"); 
                      else{
                            $numAmbi += intval($result[0]["Ambi"]);
                            $numTerni += intval($result[0]["nTerni"]);
                            $numQuaterne += intval($result[0]["nQuaterne"]);
                            $EsitiP += intval($result[0]["EsitiPositivi"]);
                            $EsitiN += intval($result[0]["EsitiNegativi"]);
-                            $db->write("UPDATE sest$myYear SET  EsitiPositivi = '$EsitiP', EsitiNegativi = '$EsitiN', ambi = '$numAmbi', nTerni = '$numTerni', nQuaterne = '$numQuaterne' where sestina = '$sestinaString' AND trip = '$trip' AND isotopi = '$ord' and ord = '$iso'"); 
+                            $db->write("UPDATE sest$myYear SET  EsitiPositivi = '$EsitiP', EsitiNegativi = '$EsitiN', ambi = '$numAmbi', nTerni = '$numTerni', nQuaterne = '$numQuaterne' where sestina = '$sestinaString' AND trip = '$trip' AND ord = '$ord' and isotopi = '$iso'"); 
 
                      }
 		if($Vwmmg3o5pnns)
