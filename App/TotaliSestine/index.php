@@ -182,7 +182,7 @@ $.active    == 0 ?   $('.spinner').hide() : "";
     { "data": "nQuaterne" },
     { "data": "trip" },
     { "data": "ord" },
-     { "data": "isotopi" }
+    { "data": "isotopi" }
 
   ],
 processing: true,
