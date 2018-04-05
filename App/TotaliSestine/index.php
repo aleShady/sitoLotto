@@ -91,6 +91,7 @@
                         <thead>
                             <tr>
                                 <th>Sestina</th>
+                                <th>Esiti</th>                              
                                 <th>EsitiPositivi</th>
                                 <th>EsitiNegativi</th>                                
                                 <th>Ambi</th>
@@ -140,8 +141,11 @@ $("#btnRicerca").click(function(){
         data: { anno: anno, tripla: tripla, ord: ord },
         success: function(result){
             $('#sestine').DataTable().clear();
+            
             var jsdata = JSON.parse(result);
-            $('#sestine').dataTable().fnAddData(jsdata);
+            if(jsdata.length > 0)
+                $('#sestine').dataTable().fnAddData(jsdata);
+            $('#sestine').DataTable().draw();
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) { 
             alert('Errore');
@@ -167,7 +171,7 @@ $("#btnRicerca").click(function(){
   $(document).ready(function(){
       window.setInterval(function(){
           
-$.active    == 0 ?   $('.spinner').hide() : "";
+$.active  == 0 ?   $('.spinner').hide() : "";
 }, 5000);
         
  $("#sestine").DataTable({
@@ -175,6 +179,7 @@ $.active    == 0 ?   $('.spinner').hide() : "";
   "cache": false,
 "columns": [
     { "data": "sestina" },
+    { "data": "Esiti" },    
     { "data": "EsitiPositivi" },
     { "data": "EsitiNegativi" },
     { "data": "Ambi" },

@@ -14,7 +14,7 @@ if (count($con) == 0) {
   $queryResult['Errore'] = "Nessun dato presente in tabella";
 }
 
-$sql="SELECT sestina, EsitiPositivi, EsitiNegativi, Ambi, nTerni, nQuaterne, trip, ord, isotopi FROM sest$anno WHERE trip = '$tripla' and ord = '$ord'";
+$sql="SELECT sestina, Esiti, EsitiPositivi, EsitiNegativi, Ambi, nTerni, nQuaterne, trip, ord, isotopi FROM sest$anno WHERE trip = '$tripla' and ord = '$ord'";
 $queryResult = $db->read($sql);
 
 

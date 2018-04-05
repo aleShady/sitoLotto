@@ -164,8 +164,10 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
               $EsitiNegativi = 0;
               $numAmbi = 0;
               $numTerni = 0;
-              $numQuaterne = 0;  
-            for($j=26; $j<=51; $j++){
+              $numQuaterne = 0; 
+              $numEsiti = 0;
+
+            for($j=25; $j<=50; $j++){
                          $countVincita = 0;
 
                 foreach($sestinaObj as $el){
@@ -175,6 +177,7 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
 
                         $countVincita++;}
                 }
+                $numEsiti++;
                    if($countVincita == 2){
                                 $numAmbi++;
                    
@@ -194,16 +197,17 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
                  $sestinaString = implode(" ",array_map('strval', $sestina));
             $iso = $isotopi == false ? "Uniti" : "Non Uniti";
             
-            $result =  $db->read("SELECT sestina, Ambi, nTerni, nQuaterne, EsitiPositivi, EsitiNegativi FROM sest$myYear where sestina =  '$sestinaString' AND trip = '$trip' AND ord = '$ord' and isotopi = '$iso' ");
+            $result =  $db->read("SELECT sestina, Esiti, Ambi, nTerni, nQuaterne, EsitiPositivi, EsitiNegativi FROM sest$myYear where sestina =  '$sestinaString' AND trip = '$trip' AND ord = '$ord' and isotopi = '$iso' ");
                      if(sizeof($result) <= 0){
-                            $db->write("INSERT INTO sest$myYear (EsitiPositivi, EsitiNegativi, Ambi, nTerni, sestina, nQuaterne, trip, ord, isotopi) VALUES ('$EsitiPositivi', '$EsitiNegativi','$numAmbi','$numTerni', '$sestinaString', '$numQuaterne', '$trip', '$ord', '$iso')"); 
+                            $db->write("INSERT INTO sest$myYear (Esiti, EsitiPositivi, EsitiNegativi, Ambi, nTerni, sestina, nQuaterne, trip, ord, isotopi) VALUES ( '$numEsiti', '$EsitiPositivi', '$EsitiNegativi','$numAmbi','$numTerni', '$sestinaString', '$numQuaterne', '$trip', '$ord', '$iso')"); 
                      } else{
+                           $numEsiti += intval($result[0]["Esiti"]);
                            $numAmbi += intval($result[0]["Ambi"]);
                            $numTerni += intval($result[0]["nTerni"]);
                            $numQuaterne += intval($result[0]["nQuaterne"]);
                            $EsitiPositivi += intval($result[0]["EsitiPositivi"]);
                            $EsitiNegativi += intval($result[0]["EsitiNegativi"]);
-                            $db->write("UPDATE sest$myYear SET  EsitiPositivi = '$EsitiPositivi', EsitiNegativi = '$EsitiNegativi', ambi = '$numAmbi', nTerni = '$numTerni', nQuaterne = '$numQuaterne' where sestina = '$sestinaString' AND trip = '$trip' AND ord = '$ord' and isotopi = '$iso'"); 
+                            $db->write("UPDATE sest$myYear SET  Esiti = '$numEsiti', EsitiPositivi = '$EsitiPositivi', EsitiNegativi = '$EsitiNegativi', ambi = '$numAmbi', nTerni = '$numTerni', nQuaterne = '$numQuaterne' where sestina = '$sestinaString' AND trip = '$trip' AND ord = '$ord' and isotopi = '$iso'"); 
 
                      }       
     }
