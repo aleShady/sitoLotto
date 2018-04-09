@@ -147,7 +147,7 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
            
        
                     
-            for($i=0; $i<25; $i++){
+            for($i=2; $i<27; $i++){
                 foreach($sestinaObj as $index => $el){
                     if(intval($el[1]) == intval($estrazioni[$i]["uno"]) || 
                        intval($el[1]) == intval($estrazioni[$i]["due"]) ||
@@ -167,7 +167,7 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
               $numQuaterne = 0; 
               $numEsiti = 0;
 
-            for($j=25; $j<50; $j++){
+            for($j=27; $j<=51; $j++){
                          $countVincita = 0;
 
                 foreach($sestinaObj as $el){

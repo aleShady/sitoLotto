@@ -16,6 +16,10 @@
 
 <!--  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">-->
   <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <link href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css" rel="stylesheet">
+    
+
 </head>
 <body>
     <div id="printer">
@@ -46,7 +50,7 @@
                 ?>
             </select>
             Composizione
-            <input type="text" id="txtSestina" class="TextboxCustom" style="margin-right: 100px">
+            <input type="text" id="txtSestina" class="TextboxCustom" readonly="true" style="margin-right: 100px">
             
             Ordine
             <select id="cmb_Ordine" class="selectCustom" style="margin-right: 100px">
@@ -122,6 +126,9 @@
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+        
+        	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
 
 </html>
 
@@ -190,6 +197,18 @@ $.active  == 0 ?   $('.spinner').hide() : "";
     { "data": "isotopi" }
 
   ],
+  dom: 'Bfrtip',
+        buttons: [
+            'print' 
+            
+        ],
+         "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Italian.json",
+             buttons: {
+                print: 'Stampa'
+            }
+        },
+          
 processing: true,
 retrieve: true
 });
