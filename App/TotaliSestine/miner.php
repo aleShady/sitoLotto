@@ -15,12 +15,12 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
  ");
 
         
-        
+   
+                  
 
-                      $Vzkdzprmnhzz = $Vfs2niaige2t->year;
-
-       
     while($count <= 1){
+                  $Vzkdzprmnhzz = $Vfs2niaige2t->year;
+
            if($isotopi == false){
             $Vv02uoebc004 = array('1-2','1-5','2-3','3-4','4-5');}
             else{
@@ -31,9 +31,10 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
 	$V1riot0zwstj = $Vwvjd4q4sfbo->getQuadrature();
         
         foreach($V1riot0zwstj[$tipo] as $quad){
-            
+                       $Voungjt1lyll = array();
+
             $Vzkdzprmnhzz = $Vfs2niaige2t->year;
-            $Vipwuwayqqjl = intval($quad["estrazione_1"]) > intval($quad["estrazione_2"]) ?  intval($quad["estrazione_1"])  - $Vjrtbrrwdfmt : intval($quad["estrazione_2"]) - $Vjrtbrrwdfmt;
+            $Vipwuwayqqjl = intval($quad["estrazione_1"]) - $Vjrtbrrwdfmt;
             $Voungjt1lyll[$quad["ruota_1"]] = array();
             $Voungjt1lyll[$quad["ruota_2"]] = array();
             if($Vipwuwayqqjl < 1)
@@ -111,11 +112,13 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
                  
            
             
-           if(count($Voungjt1lyll[$quad["ruota_1"]])>49){
-           getSestine($quad, $Voungjt1lyll[$quad["ruota_1"]], $Vtppv1qqczva, $Vfs2niaige2t->year, $tipo, $Vfs2niaige2t->tripla, $isotopi);}
-           if(count($Voungjt1lyll[$quad["ruota_2"]])>49){
+                  if(count($Voungjt1lyll[$quad["ruota_1"]]) < 51) continue;
 
-           getSestine($quad, $Voungjt1lyll[$quad["ruota_2"]], $Vtppv1qqczva, $Vfs2niaige2t->year, $tipo, $Vfs2niaige2t->tripla, $isotopi);}
+           getSestine($quad, $Voungjt1lyll[$quad["ruota_1"]], $Vtppv1qqczva, $Vfs2niaige2t->year, $tipo, $Vfs2niaige2t->tripla, $isotopi);
+         
+
+           getSestine($quad, $Voungjt1lyll[$quad["ruota_2"]], $Vtppv1qqczva, $Vfs2niaige2t->year, $tipo, $Vfs2niaige2t->tripla, $isotopi);
+           
 
         }
         $count++;
@@ -147,7 +150,7 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
            
        
                     
-            for($i=2; $i<27; $i++){
+            for($i=0; $i<25; $i++){
                 foreach($sestinaObj as $index => $el){
                     if(intval($el[1]) == intval($estrazioni[$i]["uno"]) || 
                        intval($el[1]) == intval($estrazioni[$i]["due"]) ||
@@ -167,7 +170,7 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
               $numQuaterne = 0; 
               $numEsiti = 0;
 
-            for($j=27; $j<=51; $j++){
+            for($j=25; $j<51; $j++){
                          $countVincita = 0;
 
                 foreach($sestinaObj as $el){
