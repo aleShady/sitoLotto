@@ -32,7 +32,7 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
         
         foreach($V1riot0zwstj[$tipo] as $quad){
                        $Voungjt1lyll = array();
-
+            if($quad["diagonale"] == 3) continue;          
             $Vzkdzprmnhzz = $Vfs2niaige2t->year;
             $Vipwuwayqqjl = intval($quad["estrazione_1"]) - $Vjrtbrrwdfmt;
             $Voungjt1lyll[$quad["ruota_1"]] = array();
@@ -111,11 +111,9 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
             }
                  
            
-            
                   if(count($Voungjt1lyll[$quad["ruota_1"]]) < 51) continue;
 
            getSestine($quad, $Voungjt1lyll[$quad["ruota_1"]], $Vtppv1qqczva, $Vfs2niaige2t->year, $tipo, $Vfs2niaige2t->tripla, $isotopi);
-         
 
            getSestine($quad, $Voungjt1lyll[$quad["ruota_2"]], $Vtppv1qqczva, $Vfs2niaige2t->year, $tipo, $Vfs2niaige2t->tripla, $isotopi);
            
@@ -171,8 +169,8 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
               $numEsiti = 0;
  $arr2 = array_map(function($sestinaObj) {
     return $sestinaObj[1];
-}, $sestinaObj);
-$arr2 = array_unique($arr2, SORT_REGULAR);
+}, $sestinaObj); 
+if(checkDuplicato($arr2) == true && $quad['diagonale'] != 45) return false;
             for($j=25; $j<51; $j++){
                          $countVincita = 0;
 
@@ -223,9 +221,12 @@ $arr2 = array_unique($arr2, SORT_REGULAR);
                            
                             $db->write("UPDATE sest$myYear SET  Esiti = '$numEsiti', EsitiPositivi = '$EsitiPositivi', EsitiNegativi = '$EsitiNegativi', ambi = '$numAmbi', nTerni = '$numTerni', nQuaterne = '$numQuaterne' where sestina = '$sestinaString' AND trip = '$trip' AND ord = '$ord' and isotopi = '$iso'"); 
 
-                     }       
-    }
-        
+                     }   
+}
+    
+   function checkDuplicato($array) {
+   return count($array) !== count(array_unique($array));
+}
 //        
 ////                
 ////        while($count <= 1){
