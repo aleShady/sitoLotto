@@ -169,14 +169,17 @@ where trip = '$Vfs2niaige2t->tripla' and ord = '$Vfs2niaige2t->ordine'
               $numTerni = 0;
               $numQuaterne = 0; 
               $numEsiti = 0;
-
+ $arr2 = array_map(function($sestinaObj) {
+    return $sestinaObj[1];
+}, $sestinaObj);
+$arr2 = array_unique($arr2, SORT_REGULAR);
             for($j=25; $j<51; $j++){
                          $countVincita = 0;
 
-                foreach($sestinaObj as $el){
-                    if(intval($el[1]) == intval($estrazioni[$j]["uno"]) || intval($el[1]) == intval($estrazioni[$j]["due"]) ||
-                        intval($el[1]) == intval($estrazioni[$j]["tre"]) || intval($el[1]) == intval($estrazioni[$j]["quattro"]) ||
-                        intval($el[1]) == intval($estrazioni[$j]["cinque"])){
+                foreach($arr2 as $el){
+                    if(intval($el) == intval($estrazioni[$j]["uno"]) || intval($el) == intval($estrazioni[$j]["due"]) ||
+                        intval($el) == intval($estrazioni[$j]["tre"]) || intval($el) == intval($estrazioni[$j]["quattro"]) ||
+                        intval($el) == intval($estrazioni[$j]["cinque"])){
 
                         $countVincita++;}
                 }
